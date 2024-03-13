@@ -20,7 +20,7 @@ public:
     * @param low          T on of the PWM when the servo is left most (ms)
     * @param high         T on of the PWM when the servo is right most (ms)
     */
-    Servo(ledc_channel_t ledc_channel, float low = 1.5f, float high = 2.5f);
+    Servo(int ledc_channel, float low = 1.5f, float high = 2.5f);
 
 public:
     /*
@@ -69,7 +69,7 @@ public:
      * @param time     in ms (0 is instant)
      * @param blocking only for time != 0: wait for the servo to reach its endpoint?
      */
-    void write(float angle, uint32_t speed = 0, bool blocking = false);
+    void write(float angle, uint32_t time = 0, bool blocking = false);
 
     /*
      * Read the current Servo position - read must be attached

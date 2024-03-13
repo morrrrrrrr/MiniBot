@@ -46,8 +46,8 @@ void Servo::setup()
     ESP_ERROR_CHECK(ledc_fade_func_install(0));
 }
 
-Servo::Servo(ledc_channel_t ledc_channel, float low, float high) : 
-    m_ledcChannel(ledc_channel),
+Servo::Servo(int ledc_channel, float low, float high) : 
+    m_ledcChannel(static_cast<ledc_channel_t>(ledc_channel)),
     m_thresholdLow(low),
     m_thresholdHigh(high),
     m_dcLow ((m_thresholdLow   / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
@@ -62,7 +62,7 @@ void Servo::attachWrite(uint8_t pin)
 {
     // safe-guard to not attach twice
     if (isAttached()) return;
-
+    
     // save the pin you attach to
     m_gpioPins.write = pin;
 
@@ -185,4 +185,9 @@ void Servo::startFadeOperation(int targetDuty, uint32_t time, bool block)
         time,
         block ? LEDC_FADE_WAIT_DONE : LEDC_FADE_NO_WAIT
     );
+}
+
+void Servo::prepare()
+{
+    write(read());
 }

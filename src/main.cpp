@@ -4,11 +4,11 @@
 #include "inverseKinematic.h"
 #include "robot.h"
 
-Queue<int, 10> queue;
+Servo servo(0);
 
 void setup() 
 {
-    
+    Servo::setup();
 }
 
 void loop()
