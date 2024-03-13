@@ -1,6 +1,12 @@
 
+/*
+ * In addition to being completely awesome, this queue is also thread-locked!
+ */
+
 #ifndef __QUEUE_H__
 #define __QUEUE_H__
+
+#include "mutex.h"
 
 template <typename T, int maxSize>
 class Queue
@@ -42,6 +48,8 @@ public:
     }
     T pop_front()
     {
+        Lock lock(m_mutex);
+
         // Error-Handling: size is 0:
         if (m_root == m_head)
         {
@@ -57,7 +65,9 @@ public:
     
 public:
     void push_back(const T& data)
-    {  
+    {
+        Lock lock(m_mutex);
+
         // Error-Handling: 
         if (m_head + 1 == m_root)
         {
@@ -73,6 +83,8 @@ private:
     T* m_head;
     T* m_root;
     T  m_data[maxSize];
+
+    Mutex m_mutex;
 
 };
 
