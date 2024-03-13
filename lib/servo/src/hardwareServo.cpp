@@ -9,8 +9,8 @@
 #define SERVO_DUTY_CYCLE_MAX (powf(2, SERVO_FREQUENCY) - 1)
 
 
-
-int mapftoi(float value, float fromLow, float fromHigh, int toLow, int toHigh)
+template <typename Tx, typename Ty>
+Ty myMap(Tx value, Tx fromLow, Tx fromHigh, Ty toLow, Ty toHigh)
 {
     return ((value - fromLow) / fromHigh) * (toHigh - toLow) + toLow;
 }
@@ -47,35 +47,35 @@ void Servo::setup()
 }
 
 Servo::Servo(ledc_channel_t ledc_channel, float low, float high) : 
-    m_ledc_channel(ledc_channel),
+    m_ledcChannel(ledc_channel),
     m_thresholdLow(low),
     m_thresholdHigh(high),
     m_dcLow ((m_thresholdLow   / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
     m_dcHigh((m_thresholdHigh  / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
-    m_isAttached(false), m_isMoving(false),
-    m_attachedPin(0),
+    m_isWriteAttached(false), m_isMoving(false),
+    m_gpioPins(),
     m_currentDutyCycle(0),
-    m_intr_handle()
+    m_intrHandle()
 { /* do nothing */}
 
-void Servo::attach(uint8_t pin)
+void Servo::attachWrite(uint8_t pin)
 {
     // safe-guard to not attach twice
     if (isAttached()) return;
 
     // save the pin you attach to
-    m_attachedPin = pin;
+    m_gpioPins.write = pin;
 
     // set the attached-flag to true
-    m_isAttached = true;
+    m_isWriteAttached = true;
 
     // call the ledc api to attach the pwm channel to the specified pin
     // ledcAttachPin(pin, m_PWMChannel);
 
     ledc_channel_config_t ledc_channel = {
-        .gpio_num =   m_attachedPin,
+        .gpio_num =   m_gpioPins.write,
         .speed_mode = SERVO_SPEED_MODE,
-        .channel =    m_ledc_channel,
+        .channel =    m_ledcChannel,
         .intr_type =  LEDC_INTR_FADE_END,
         .timer_sel =  SERVO_TIMER,
         .duty =       0,
@@ -87,13 +87,36 @@ void Servo::attach(uint8_t pin)
 
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
-    ESP_ERROR_CHECK(ledc_isr_register(isr_handler, this, ESP_INTR_FLAG_LEVEL3, &m_intr_handle));
+    ESP_ERROR_CHECK(ledc_isr_register(isr_handler, this, ESP_INTR_FLAG_LEVEL3, &m_intrHandle));
+}
+void Servo::attachRead(uint8_t pin)
+{
+    // safe-guard to not attach twice
+    if (isReadAttached()) return;
+
+    m_gpioPins.read = pin;
+
+    pinMode(pin, INPUT);
+}
+
+void Servo::attach(uint8_t dataPin)
+{
+    attachWrite(dataPin);
+}
+void Servo::attach(uint8_t dataPin, uint8_t readPin)
+{
+    attachWrite(dataPin);
+    attachRead(readPin);
 }
 
 bool Servo::isAttached() const
 {
     // check, if the pin is still the default value or not
-    return m_isAttached;
+    return m_isWriteAttached;
+}
+bool Servo::isReadAttached() const
+{
+    return m_isReadAttached;
 }
 
 void Servo::write(float angle, uint32_t time, bool block)
@@ -106,8 +129,14 @@ void Servo::write(float angle, uint32_t time, bool block)
         return;
     }
 
+    // Error-Handling: Servo is not attached
+    if (!m_isWriteAttached)
+    {
+        return;
+    }
+
     // map the angle to the dutycycle
-    int dc = mapftoi(angle, 0.0f, M_PI, m_dcLow, m_dcHigh);
+    int dc = myMap<float, int>(angle, 0.0f, M_PI, m_dcLow, m_dcHigh);
 
     if (time)
     {
@@ -121,14 +150,28 @@ void Servo::write(float angle, uint32_t time, bool block)
     }
 }
 
+float Servo::read()
+{
+    // return the servo angle in radians
+
+    // check, if the read functionality is enabled:
+    if (!isReadAttached()) return 0;
+
+    // read value from the read pin (analog)
+    uint16_t potiValue = analogRead(m_gpioPins.read);
+
+    // convert the poti value to a float value
+    return myMap<uint16_t, float>(potiValue, 0, 1023, 0.0f, M_PI);
+}
+
 void Servo::writeDutyCycle(int targetDuty)
 {
     m_currentDutyCycle = targetDuty;
 
     // ledcWrite(m_PWMChannel, targetDuty);
 
-    ESP_ERROR_CHECK(ledc_set_duty(SERVO_SPEED_MODE, m_ledc_channel, targetDuty));
-    ESP_ERROR_CHECK(ledc_update_duty(SERVO_SPEED_MODE, m_ledc_channel));
+    ESP_ERROR_CHECK(ledc_set_duty(SERVO_SPEED_MODE, m_ledcChannel, targetDuty));
+    ESP_ERROR_CHECK(ledc_update_duty(SERVO_SPEED_MODE, m_ledcChannel));
 }
 
 void Servo::startFadeOperation(int targetDuty, uint32_t time, bool block)
@@ -137,7 +180,7 @@ void Servo::startFadeOperation(int targetDuty, uint32_t time, bool block)
 
     ledc_set_fade_time_and_start(
         SERVO_SPEED_MODE,
-        m_ledc_channel,
+        m_ledcChannel,
         targetDuty,
         time,
         block ? LEDC_FADE_WAIT_DONE : LEDC_FADE_NO_WAIT

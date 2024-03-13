@@ -29,10 +29,29 @@ public:
     static void setup();
 
     /*
-    * Attach the servo to a certain pin
-    * @param pin the pin the servo will attach to
+    * Attach the servo data to a certain pin
+    * @param dataPin the pin the servo will attach to
     */
-    void attach(uint8_t pin);
+    void attachWrite(uint8_t dataPin);
+
+    /*
+     * Attach the servo potentiometer to a certain pin (analog input)
+     * @param readPin the pin the poti will attach to
+     */
+    void attachRead(uint8_t readPin);
+
+    /*
+     * Attaches the dataPin as the servo pin
+     * @param dataPin The data pin of the servo
+     */
+    void attach(uint8_t dataPin);
+
+    /*
+     * Attaches the dataPin as the servo pin and the readPin as an analog input for reading the servo poti
+     * @param dataPin The data pin of the servo
+     * @param readPin The poti of the servo
+     */
+    void attach(uint8_t dataPin, uint8_t readPin);
 
     /*
     * Returns weather or not the servo is attached to a pin or not
@@ -40,12 +59,31 @@ public:
     bool isAttached() const;
 
     /*
-    * Write an angle to the PWM
-    * @param angle    in radians (0 - PI)
-    * @param time     in ms (0 is instant)
-    * @param blocking only for time != 0: wait for the servo to reach its endpoint?
-    */
+     * Returns weather or not a read pin is attached
+     */
+    bool isReadAttached() const;
+
+    /*
+     * Write an angle to the PWM
+     * @param angle    in radians (0 - PI)
+     * @param time     in ms (0 is instant)
+     * @param blocking only for time != 0: wait for the servo to reach its endpoint?
+     */
     void write(float angle, uint32_t speed = 0, bool blocking = false);
+
+    /*
+     * Read the current Servo position - read must be attached
+     * @return the current angle of the servo in radians
+     */
+    float read();
+
+public:
+    /*
+     * Reads the servo value and sets the output to it's value
+     * - Helps with initializing the servos
+     * - Read needs to be enabled for this function to work
+     */
+    void prepare();
 
 private:
     /*
@@ -69,21 +107,26 @@ private:
     static void isr_handler(void* servo_ptr);
 
 private:
-    ledc_channel_t m_ledc_channel;
+    ledc_channel_t m_ledcChannel;
 
-    uint8_t m_attachedPin;
+    struct
+    {
+        uint8_t write;
+        uint8_t read;
+    } m_gpioPins;
 
     float m_thresholdLow =  1.5f;
     float m_thresholdHigh = 2.5f;
 
     int m_dcLow, m_dcHigh;
 
-    bool m_isMoving = false;
-    bool m_isAttached = false;
+    bool m_isMoving =        false;
+    bool m_isWriteAttached = false;
+    bool m_isReadAttached =  false;
 
     int m_currentDutyCycle;
 
-    ledc_isr_handle_t m_intr_handle;
+    ledc_isr_handle_t m_intrHandle;
 
 };
 
