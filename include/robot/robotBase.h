@@ -22,6 +22,18 @@ public:
 
 public:
     /*
+     * Attach the write pins of the 4 servos
+     * @param pins an array with 4 elements: [ s0Pin, ..., s3Pin ]
+     */
+    void attach(uint8_t pins[]);
+    /*
+     * Attach the read pins of the 4 servos
+     * @param pins an array with 4 elements: [ s0Pin, ..., s3Pin ]
+     */
+    void attachRead(uint8_t pins[]);
+
+public:
+    /*
      * Let the robot drive to a position
      * @param pos   the position the robot should drive to
      * @param speed with which speed the robot should drive to the position (mm/s) (0 is instant)
@@ -55,6 +67,9 @@ private:
     Servo            m_servos[4];
     InverseKinematic m_inverseKinematic;
     RobPosition      m_position;
+
+private:
+    Mat4 m_servoOffsets;
 
 }; 
 

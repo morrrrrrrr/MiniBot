@@ -24,6 +24,16 @@ public:
         return maxSize;
     }
 
+    int getSize() const
+    {
+        if (m_head <= m_root)
+        {
+            return (m_data + maxSize - m_root) + (m_head - m_data);
+        }
+
+        return (m_head - m_data) - (m_root - m_data);
+    }
+
 private:
     void increment(T*& ptr)
     {

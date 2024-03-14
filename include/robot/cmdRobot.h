@@ -1,6 +1,6 @@
 
-#ifndef __ROBOT_H__
-#define __ROBOT_H__
+#ifndef __COMMAND_ROBOT_H__
+#define __COMMAND_ROBOT_H__
 
 #include "common.h"
 #include "queue.h"
@@ -51,13 +51,21 @@ private:
     bool handleOptimalMove(RobCommand& command, int delta);
 
 private:
+    /*
+     * start the specified command to be executed
+     */
+    void startCommand(RobCommand command);
+
+private:
     Queue<RobCommand, 10> m_commandQueue;
 
     RobCommand m_currentCommand;
-    float m_commandProgress; // 0 to 1
+    uint16_t m_commandProgress;
 
     // flag weather or not a current command is set
     bool m_commandActive;
+
+    RobPosition m_linearStart;
 
 private:
     RobotBase& m_base;
