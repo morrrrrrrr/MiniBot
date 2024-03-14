@@ -4,7 +4,7 @@
 
 #include "robot/robotBase.h"
 
-#include "robot/cmdRobot.h"
+#include "robot/automaticRobot.h"
 
 class Robot
 {
@@ -15,7 +15,7 @@ private:
     RobotBase m_base;
 
 private:
-    CommandControlledRobot m_ccRobot;
+    AutomaticRobot m_ccRobot;
 
 };
 

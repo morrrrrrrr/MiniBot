@@ -1,4 +1,4 @@
-#include "robot/cmdRobot.h"
+#include "robot/automaticRobot.h"
 
 
 RobPosition lerp(const RobPosition& a, const RobPosition& b, float t)
@@ -11,19 +11,19 @@ RobPosition lerp(const RobPosition& a, const RobPosition& b, float t)
 
 
 
-CommandControlledRobot::CommandControlledRobot(RobotBase& robotBase) :
+AutomaticRobot::AutomaticRobot(RobotBase& robotBase) :
     m_base(robotBase)
 {
 
 }
 
-void CommandControlledRobot::update(int delta)
+void AutomaticRobot::update(int delta)
 {
     checkForNewCommand();
     updateCurrentCommand(delta);
 }
 
-void CommandControlledRobot::checkForNewCommand()
+void AutomaticRobot::checkForNewCommand()
 {
     if (m_commandActive) return;
     if (m_commandQueue.getSize() == 0) return;
@@ -31,7 +31,7 @@ void CommandControlledRobot::checkForNewCommand()
     startCommand(m_commandQueue.pop_front());
 }
 
-void CommandControlledRobot::updateCurrentCommand(int delta)
+void AutomaticRobot::updateCurrentCommand(int delta)
 {
     if (!m_commandActive) return;
 
@@ -51,7 +51,7 @@ void CommandControlledRobot::updateCurrentCommand(int delta)
     }
 }
 
-bool CommandControlledRobot::handleLinearMove(RobCommand& command, int delta)
+bool AutomaticRobot::handleLinearMove(RobCommand& command, int delta)
 {
     float distance = (m_linearStart.point - command.target.point).magnitude();
     uint16_t time = distance / command.speed * 1000;
@@ -62,12 +62,12 @@ bool CommandControlledRobot::handleLinearMove(RobCommand& command, int delta)
 
     return m_commandProgress >= time;
 }
-bool CommandControlledRobot::handleOptimalMove(RobCommand& command, int delta)
+bool AutomaticRobot::handleOptimalMove(RobCommand& command, int delta)
 {
     return !m_base.isMoving();
 }
 
-void CommandControlledRobot::startCommand(RobCommand command)
+void AutomaticRobot::startCommand(RobCommand command)
 {
     m_currentCommand = command;
     m_commandActive = true;

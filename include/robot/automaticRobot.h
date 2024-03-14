@@ -7,10 +7,10 @@
 #include "robot/robotCommand.h"
 #include "robot/robotBase.h"
 
-class CommandControlledRobot
+class AutomaticRobot
 {
 public:
-    CommandControlledRobot(RobotBase& base);
+    AutomaticRobot(RobotBase& base);
 
 public:
     /*
