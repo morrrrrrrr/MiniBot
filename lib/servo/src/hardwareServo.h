@@ -53,6 +53,7 @@ public:
      */
     void attach(uint8_t dataPin, uint8_t readPin);
 
+public:
     /*
     * Returns weather or not the servo is attached to a pin or not
     */
@@ -63,6 +64,12 @@ public:
      */
     bool isReadAttached() const;
 
+    /*
+     * Returns if the servo is moving or not
+     */
+    bool isMoving() const;
+
+public:
     /*
      * Write an angle to the PWM
      * @param angle    in radians (0 - PI)

@@ -118,6 +118,10 @@ bool Servo::isReadAttached() const
 {
     return m_isReadAttached;
 }
+bool Servo::isMoving() const
+{
+    return m_isMoving;
+}
 
 void Servo::write(float angle, uint16_t time, bool block)
 {
