@@ -119,7 +119,7 @@ bool Servo::isReadAttached() const
     return m_isReadAttached;
 }
 
-void Servo::write(float angle, uint32_t time, bool block)
+void Servo::write(float angle, uint16_t time, bool block)
 {
     /* NOTE: angle is given in radians */
 
@@ -174,7 +174,7 @@ void Servo::writeDutyCycle(int targetDuty)
     ESP_ERROR_CHECK(ledc_update_duty(SERVO_SPEED_MODE, m_ledcChannel));
 }
 
-void Servo::startFadeOperation(int targetDuty, uint32_t time, bool block)
+void Servo::startFadeOperation(int targetDuty, uint16_t time, bool block)
 {
     m_isMoving = true;
 

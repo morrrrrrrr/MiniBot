@@ -15,7 +15,7 @@ struct Mat4
 {
     float a, b, c, d;
 };
-struct KinRequest
+struct RobPosition
 {
     Vector3f point;
     float angle;
@@ -32,7 +32,7 @@ public:
     {  }
 
 public:
-    Mat4 calculate(const KinRequest& req)
+    Mat4 calculate(const RobPosition& req)
     {
         // transform the 4-dimensional problem to 3 dimensions
         float angle = atan2f(req.point.z, req.point.x);

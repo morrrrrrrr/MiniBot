@@ -69,7 +69,7 @@ public:
      * @param time     in ms (0 is instant)
      * @param blocking only for time != 0: wait for the servo to reach its endpoint?
      */
-    void write(float angle, uint32_t time = 0, bool blocking = false);
+    void write(float angle, uint16_t time = 0, bool blocking = false);
 
     /*
      * Read the current Servo position - read must be attached
@@ -98,7 +98,7 @@ private:
      * @param dutyCycle to which duty cycle will the fade be
      * @param speed     the speed of the fade
      */
-    void startFadeOperation(int targetDuty, uint32_t speed, bool blocking);
+    void startFadeOperation(int targetDuty, uint16_t speed, bool blocking);
 
 private:
     /*

@@ -1,7 +1,7 @@
 
 # Hardware Servo - Library
 
-Written by Moritz Weißenböck
+Written by morrrrrrrrrrrr
 
 Uses the [esp-ledcontrol](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/peripherals/ledc.html)
 library for controlling up to 8 servos with the esp

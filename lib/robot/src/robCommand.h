@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "vector.h"
+#include "inverseKinematic.h"
 
 enum MoveType : uint8_t
 {
@@ -15,9 +16,9 @@ enum MoveType : uint8_t
 
 struct RobCommand
 {
-    MoveType moveType;
-    uint16_t speed;
-    Vector3f target;
+    MoveType   moveType;
+    uint16_t   speed;
+    RobPosition target;
 };
 
 #endif
