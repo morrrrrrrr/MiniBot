@@ -13,9 +13,7 @@ RobPosition lerp(const RobPosition& a, const RobPosition& b, float t)
 
 AutomaticRobot::AutomaticRobot(RobotBase& robotBase) :
     m_base(robotBase)
-{
-
-}
+{ /* do nothing */ }
 
 void AutomaticRobot::update(int delta)
 {

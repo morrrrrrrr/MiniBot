@@ -11,20 +11,20 @@ RobotBase::RobotBase() :
 
 }
 
-void RobotBase::attach(uint8_t pins[])
+void RobotBase::attach(const uint8_t pins[])
 {
     Servo* servo;
-    uint8_t* pin;
+    const uint8_t* pin;
 
     for (servo = m_servos, pin = pins; servo - m_servos < 4; servo++, pin++)
     {
         servo->attach(*pin);
     }
 }
-void RobotBase::attachRead(uint8_t pins[])
+void RobotBase::attachRead(const uint8_t pins[])
 {
     Servo* servo;
-    uint8_t* pin;
+    const uint8_t* pin;
 
     for (servo = m_servos, pin = pins; servo - m_servos < 4; servo++, pin++)
     {

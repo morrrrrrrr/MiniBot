@@ -25,12 +25,12 @@ public:
      * Attach the write pins of the 4 servos
      * @param pins an array with 4 elements: [ s0Pin, ..., s3Pin ]
      */
-    void attach(uint8_t pins[]);
+    void attach(const uint8_t pins[]);
     /*
      * Attach the read pins of the 4 servos
      * @param pins an array with 4 elements: [ s0Pin, ..., s3Pin ]
      */
-    void attachRead(uint8_t pins[]);
+    void attachRead(const uint8_t pins[]);
 
 public:
     /*

@@ -2,9 +2,7 @@
 
 ManualRobot::ManualRobot(RobotBase& base) :
     m_base(base)
-{
-
-}
+{ /* do nothing */ }
 
 void ManualRobot::update(int delta)
 {
