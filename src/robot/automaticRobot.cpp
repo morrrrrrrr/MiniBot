@@ -58,7 +58,8 @@ bool AutomaticRobot::handleLinearMove(RobCommand& command, int delta)
 
     m_commandProgress += delta;
 
-    m_base.setPosition(lerp(m_linearStart, command.target, static_cast<float>(m_commandProgress) / time), command.speed);
+    // "instantly" move in micro steps along a linear path from start to end
+    m_base.setPosition(lerp(m_linearStart, command.target, static_cast<float>(m_commandProgress) / time), 0);
 
     return m_commandProgress >= time;
 }

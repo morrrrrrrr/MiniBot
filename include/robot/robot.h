@@ -5,6 +5,7 @@
 #include "robot/robotBase.h"
 
 #include "robot/automaticRobot.h"
+#include "robot/manualRobot.h"
 
 class Robot
 {
@@ -15,7 +16,8 @@ private:
     RobotBase m_base;
 
 private:
-    AutomaticRobot m_ccRobot;
+    AutomaticRobot m_automatic;
+    ManualRobot    m_manual;
 
 };
 

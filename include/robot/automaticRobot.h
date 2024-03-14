@@ -1,6 +1,6 @@
 
-#ifndef __COMMAND_ROBOT_H__
-#define __COMMAND_ROBOT_H__
+#ifndef __AUTOMATIC_ROBOT_H__
+#define __AUTOMATIC_ROBOT_H__
 
 #include "common.h"
 #include "queue.h"
