@@ -32,12 +32,27 @@ void RobotBase::attachRead(const uint8_t pins[])
     }
 }
 
-void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time)
+void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, float angleLimit)
 {
-    servos[0].write(angles.a + offsets.a, time);
-    servos[1].write(angles.b + offsets.b, time);
-    servos[2].write(angles.c + offsets.c, time);
-    servos[3].write(angles.d + offsets.d, time);
+    if (robError) return;
+
+    float finalAngles[4];
+
+    finalAngles[0] = (angles.a + offsets.a);
+    finalAngles[1] = (angles.b + offsets.b);
+    finalAngles[2] = (angles.c + offsets.c);
+    finalAngles[3] = (angles.d + offsets.d);
+
+    for (int i = 0; i < 4; i++)
+    {
+        if (finalAngles[i] < angleLimit)
+        {
+            handle_robot_error(rob_error_t::TOO_CLOSE_ANGLES);
+            return;
+        }
+
+        servos[i].write(finalAngles[i], time);
+    }
 }
 
 void RobotBase::setPosition(RobPosition pos, uint16_t speed)
@@ -49,8 +64,8 @@ void RobotBase::setPosition(RobPosition pos, uint16_t speed)
     {
         time = speedToTime(m_position, pos, speed);
     }
-    
-    writeResult(m_servos, res, m_servoOffsets, time);
+
+    writeResult(m_servos, res, m_servoOffsets, time, m_angleLimit);
 }
 
 bool RobotBase::isMoving() const
@@ -75,4 +90,9 @@ uint16_t RobotBase::speedToTime(RobPosition& current, RobPosition& next, uint16_
 RobPosition RobotBase::getCurrentPosition() const
 {
     return m_position;
+}
+
+void RobotBase::setAxisLengths(float ax0, float ax1, float ax2)
+{
+    m_inverseKinematic.setAxisLengths({ax0, ax1, ax2, 0});
 }

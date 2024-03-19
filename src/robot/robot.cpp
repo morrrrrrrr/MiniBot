@@ -18,6 +18,9 @@ void Robot::attachRead(const uint8_t pins[])
 
 void Robot::update()
 {
+    // check for any errors, only if there are none, continue
+    if (check_robot_error()) return;
+
     m_time.update();
 
     switch (m_mode)

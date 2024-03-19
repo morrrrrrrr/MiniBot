@@ -63,6 +63,12 @@ public:
      */
     RobPosition getCurrentPosition() const;
 
+public:
+    /*
+     * Set the lengths for all of the axes, in mm
+     */
+    void setAxisLengths(float ax0, float ax1, float ax3);
+
 private:
     Servo            m_servos[4];
     InverseKinematic m_inverseKinematic;
@@ -70,6 +76,9 @@ private:
 
 private:
     Mat4 m_servoOffsets;
+
+    // what is the minimum error
+    float m_angleLimit;
 
 }; 
 

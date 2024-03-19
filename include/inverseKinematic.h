@@ -10,6 +10,7 @@
 
 #include "common.h"
 #include "vector.h"
+#include "robError.h"
 
 struct Mat4
 {
@@ -42,24 +43,25 @@ public:
             /* y: */ req.point.y 
         );
 
-        Vector3f target2d = point2d + Vector3f(cosf(req.angle), sinf(req.angle)) * m_axis_lengths.d;
+        Vector3f target2d = point2d + Vector3f(cosf(req.angle), sinf(req.angle)) * m_axis_lengths.c;
 
-        Mat4 res = calculate3DIM(target2d, angle);
+        Mat4 res;
+        handle_robot_error(calculate3DIM(target2d, angle, res));
 
-        res.d = M_PI - res.a - res.b - res.c;
+        // why? i dont know
+        res.b = -res.b;
+
+        res.d = req.angle -res.b -res.c;
 
         return res;
     }
 
 private:
     // Calculate the axis angles based on inverse kinematic 3 AXES
-    Mat4 calculate3DIM(const Vector3f& point2d, float angle) const 
+    rob_error_t calculate3DIM(const Vector3f& point2d, float angle, Mat4& out) const 
     {
-        Mat4 res;
-
-        float l0 = m_axis_lengths.a;
-        float l1 = m_axis_lengths.b;
-        float l2 = m_axis_lengths.c;
+        float l1 = m_axis_lengths.a;
+        float l2 = m_axis_lengths.b;
 
         /*
          * Make a 3-dimensional reverse kinematic through the point and request thingy
@@ -78,11 +80,17 @@ private:
         float psi = atan2f(l2 * sinf(p2), l1 + l2 * cosf(p2));
         float p1 = b + psi;
 
-        res.a = angle;
-        res.b = p1;
-        res.c = p2;
+        out.a = angle;
+        out.b = p1;
+        out.c = p2;
 
-        return res;
+        return rob_error_t::NO_ERROR;
+    }
+
+public:
+    void setAxisLengths(Mat4 axisLengths)
+    {
+        m_axis_lengths = axisLengths;
     }
 
 private:

@@ -27,6 +27,13 @@ public:
 public:
     void update();
 
+    /*
+     * Async Functions called by the server
+     */
+public:
+    void      async_setMode(RobotMode mode);
+    RobotMode async_getMode();
+
 private:
     RobotMode m_mode;
     Time      m_time;
