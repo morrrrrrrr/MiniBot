@@ -1,10 +1,10 @@
 
 #include <Arduino.h>
 #include "robot/robot.h"
-#include "server.h"
+#include "serialCommand.h"
 
 Robot robot;
-AsyncWebServer server(SERVER_PORT);
+SerialCommands commands;
 
 uint8_t pins[4] {
 /* servo 0: */ 9,
@@ -13,19 +13,24 @@ uint8_t pins[4] {
 /* servo 3: */ 12
 };
 
+void onMessage(serial::Message& message)
+{
+    
+}
+
 void setup() 
 {
     Serial.begin(9600);
 
     Servo::setup();
 
-    robot.attach(pins);
+    commands.setCallback(onMessage);
 
-    startWifi();
-    startServer(server, robot);
+    robot.attach(pins);
 }
 
 void loop()
 {
+    commands.update();
     robot.update();
 }
