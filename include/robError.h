@@ -13,14 +13,13 @@ enum rob_error_t : uint8_t
 
 static rob_error_t robError = rob_error_t::NO_ERROR;
 
-void handle_robot_error(rob_error_t err)
+inline void handle_robot_error(rob_error_t err)
 {
     if (err) robError = err;
 }
-bool check_robot_error()
+inline bool check_robot_error()
 {
     return robError;
 }
-
 
 #endif
