@@ -23,10 +23,12 @@ void AutomaticRobot::update(int delta)
 
 void AutomaticRobot::checkForNewCommand()
 {
+    if (m_running) return;
     if (m_commandActive) return;
-    if (m_commandQueue.getSize() == 0) return;
+    if (m_program.size() == 0) return;
 
-    startCommand(m_commandQueue.pop_front());
+    startCommand(*m_program.current());
+    m_program.step();
 }
 
 void AutomaticRobot::updateCurrentCommand(int delta)
@@ -66,7 +68,7 @@ bool AutomaticRobot::handleOptimalMove(RobCommand& command, int delta)
     return !m_base.isMoving();
 }
 
-void AutomaticRobot::startCommand(RobCommand command)
+void AutomaticRobot::startCommand(const RobCommand& command)
 {
     m_currentCommand = command;
     m_commandActive = true;

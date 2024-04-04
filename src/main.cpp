@@ -15,22 +15,28 @@ uint8_t pins[4] {
 
 void onMessage(serial::Message& message)
 {
-    
+    switch (message.header.type)
+    {
+    default:
+        serial::Message msg(0, 0);
+        commands.writeMessage(msg);
+        break;
+    }
 }
 
 void setup() 
 {
     Serial.begin(9600);
 
-    Servo::setup();
+    // Servo::setup();
 
     commands.setCallback(onMessage);
 
-    robot.attach(pins);
+    // robot.attach(pins);
 }
 
 void loop()
 {
     commands.update();
-    robot.update();
+    // robot.update();
 }

@@ -5,6 +5,7 @@
 #include <Arduino.h>
 
 typedef unsigned char cmd_t;
+typedef unsigned int  msg_size_t;
 
 namespace serial
 {
@@ -13,8 +14,8 @@ namespace serial
     {
         struct Header
         {
-            cmd_t  type;
-            size_t size;
+            cmd_t      type;
+            msg_size_t size;
         } header;
 
         void* data;
@@ -31,7 +32,7 @@ namespace serial
             memcpy(this->data, &data, header.size);
         }
 
-        Message(cmd_t type, size_t size)
+        Message(cmd_t type, msg_size_t size)
         {
             header.type = type;
             header.size = size;
@@ -54,7 +55,7 @@ namespace serial
             data = NULL;
         }
 
-        void resize(size_t newSize)
+        void resize(msg_size_t newSize)
         {
             if (data == NULL) return;
 
@@ -78,7 +79,7 @@ public:
 public:
     void update()
     {
-        if (Serial.available())
+        while (Serial.available())
         {
             byte b = Serial.read();
 
@@ -108,7 +109,7 @@ private:
             m_messageIn.header.size = (m_messageIn.header.size) | (b >> (m_progress * 8));
             m_progress++;
 
-            if (m_progress >= sizeof(size_t))
+            if (m_progress >= sizeof(msg_size_t))
             {
                 m_state = State::READ_DATA;
                 m_progress = 0;
@@ -138,6 +139,14 @@ private:
         m_messageIn.clear();
     }
 
+public:
+    void writeMessage(serial::Message& msg)
+    {
+        Serial.write((char*)(&msg.header.type), sizeof(cmd_t));
+        Serial.write((char*)(&msg.header.size), sizeof(msg_size_t));
+        Serial.write((char*)(msg.data), msg.header.size);
+    }
+
 private:
     enum State
     {
@@ -147,7 +156,7 @@ private:
     } m_state = State::READ_TYPE;
 
     serial::Message m_messageIn;
-    size_t m_progress = 0;
+    msg_size_t m_progress = 0;
     
     void (*m_callback)(serial::Message&);
 

@@ -6,6 +6,7 @@
 #include "queue.h"
 #include "robot/robotCommand.h"
 #include "robot/robotBase.h"
+#include "robot/program.h"
 
 class AutomaticRobot
 {
@@ -18,6 +19,20 @@ public:
      * @param delta the delta time in ms
      */
     void update(int delta);
+
+    void start()
+    {
+        m_running = true;
+    }
+    void pause()
+    {
+        m_running = false;
+    }
+    void stop()
+    {
+        m_running = false;
+        m_program.reset();
+    }
 
 private:
     /*
@@ -54,16 +69,18 @@ private:
     /*
      * start the specified command to be executed
      */
-    void startCommand(RobCommand command);
+    void startCommand(const RobCommand& command);
 
 private:
-    Queue<RobCommand, 10> m_commandQueue;
+    Program m_program;
 
     RobCommand m_currentCommand;
     uint16_t m_commandProgress;
 
     // flag weather or not a current command is set
     bool m_commandActive;
+
+    bool m_running = false;
 
     RobPosition m_linearStart;
 
