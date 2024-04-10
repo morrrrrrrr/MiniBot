@@ -20,20 +20,12 @@ public:
 
     /*
      * Set the input / which axis will be moved how
-     * from 0 to 1
-     * @param input the input vector (4 dim)
+     * @param input the input as a robot command
      */
-    void setInput(RobPosition input);
-
-    /*
-     * Set the manual speed - what speed is used when input is 1.0f
-     * @param speed the speed in mm/s
-     */
-    void setSpeed(uint16_t speed);
+    void setInput(RobCommand input);
 
 private:
-    RobPosition m_input;
-    uint16_t    m_speed;
+    RobCommand m_input;
 
 private:
     RobotBase& m_base;
