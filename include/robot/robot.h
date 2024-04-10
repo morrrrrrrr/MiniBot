@@ -3,6 +3,7 @@
 #define __ROBOT_H__
 
 #include "robot/robotBase.h"
+#include "robot/commandExecutor.h"
 
 #include "robot/automaticRobot.h"
 #include "robot/manualRobot.h"
@@ -27,19 +28,13 @@ public:
 public:
     void update();
 
-    /*
-     * Async Functions called by the server
-     */
-public:
-    void      async_setMode(RobotMode mode);
-    RobotMode async_getMode();
-
 private:
     RobotMode m_mode;
     Time      m_time;
 
 private:
-    RobotBase m_base;
+    RobotBase       m_base;
+    CommandExecutor m_executor;
 
 private:
     AutomaticRobot m_automatic;

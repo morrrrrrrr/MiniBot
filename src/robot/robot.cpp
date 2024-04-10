@@ -3,8 +3,9 @@
 Robot::Robot() :
     m_mode(RobotMode::OFF),
     m_base(),
-    m_automatic(m_base),
-    m_manual(m_base)
+    m_executor(m_base),
+    m_automatic(m_base, m_executor),
+    m_manual(m_base, m_executor)
 { /* do nothing */ }
 
 void Robot::attach(const uint8_t pins[])

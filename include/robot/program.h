@@ -35,7 +35,7 @@ public:
         data.data = malloc(data.size);
 
         memcpy(data.data, &m_size, sizeof(m_size));
-        memcpy(data.data + sizeof(m_size), m_commands, m_size * sizeof(RobCommand));
+        memcpy((void*)((char*)data.data + sizeof(m_size)), m_commands, m_size * sizeof(RobCommand));
 
         return data;
     }
@@ -49,7 +49,7 @@ public:
 
         resize(size);
 
-        memcpy(m_commands, data.data + sizeof(m_size), size * sizeof(RobCommand));
+        memcpy(m_commands, (void*)((char*)data.data + sizeof(m_size)), size * sizeof(RobCommand));
     }
 
 public:

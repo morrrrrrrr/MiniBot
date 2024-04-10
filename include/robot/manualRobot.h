@@ -4,11 +4,12 @@
 
 #include "common.h"
 #include "robot/robotBase.h"
+#include "robot/commandExecutor.h"
 
 class ManualRobot
 {
 public:
-    ManualRobot(RobotBase& base);
+    ManualRobot(RobotBase& base, CommandExecutor& commandExecutor);
 
 public:
     /*
@@ -36,6 +37,7 @@ private:
 
 private:
     RobotBase& m_base;
+    CommandExecutor& m_executor;
 
 };
 
