@@ -1,12 +1,6 @@
-/*
- *  Autor: MW
- *  Datum: 18/05/23 - made header-only and rewritten on 23/12/2023
- *  Zweck: Include Datei für Spinnenbein
- *  Datei: leg.hpp - previously Leg.cpp/h
- */
 
-#ifndef LEG_HPP
-#define LEG_HPP
+#ifndef __INVERSE_KINEMATIC_H__
+#define __INVERSE_KINEMATIC_H__
 
 #include "common.h"
 #include "vector.h"
@@ -21,6 +15,14 @@ struct RobPosition
     Vector3f point;
     float angle;
 };
+
+static inline RobPosition lerpRobPosition(const RobPosition& a, const RobPosition& b, float t)
+{
+    return RobPosition{
+        .point = (b.point - a.point) * t + a.point,
+        .angle = (b.angle - a.angle) * t + a.angle
+    };
+}
 
 class InverseKinematic {
 public:

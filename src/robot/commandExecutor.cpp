@@ -1,13 +1,5 @@
 #include "robot/commandExecutor.h"
 
-RobPosition lerp(const RobPosition& a, const RobPosition& b, float t)
-{
-    return RobPosition{
-        .point = (b.point - a.point) * t + a.point,
-        .angle = (b.angle - a.angle) * t + a.angle
-    };
-}
-
 CommandExecutor::CommandExecutor(RobotBase& robotBase) : 
     m_base(robotBase)
 { /* do nothing */ }
@@ -57,7 +49,7 @@ bool CommandExecutor::handleLinearMove(RobCommand& command, int delta)
     m_commandProgress += delta;
 
     // "instantly" move in micro steps along a linear path from start to end
-    m_base.setPosition(lerp(m_linearStart, command.target, static_cast<float>(m_commandProgress) / time), 0);
+    m_base.setPosition(lerpRobPosition(m_linearStart, command.target, static_cast<float>(m_commandProgress) / time), 0);
 
     return m_commandProgress >= time;
 }

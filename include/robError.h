@@ -8,7 +8,8 @@ enum rob_error_t : uint8_t
 {
     NO_ERROR = 0,
     OUT_OF_BOUNDS = 100,
-    TOO_CLOSE_ANGLES
+    TOO_CLOSE_ANGLES,
+    SERIAL_MESSAGE_BUFFER_OVERFLOW = 200
 };
 
 static rob_error_t robError = rob_error_t::NO_ERROR;

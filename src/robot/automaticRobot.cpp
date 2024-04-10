@@ -1,16 +1,5 @@
 #include "robot/automaticRobot.h"
 
-
-RobPosition lerp(const RobPosition& a, const RobPosition& b, float t)
-{
-    return RobPosition{
-        .point = (b.point - a.point) * t + a.point,
-        .angle = (b.angle - a.angle) * t + a.angle
-    };
-}
-
-
-
 AutomaticRobot::AutomaticRobot(RobotBase& robotBase, CommandExecutor& commandExecutor) :
     m_base(robotBase), m_executor(commandExecutor)
 { /* do nothing */ }

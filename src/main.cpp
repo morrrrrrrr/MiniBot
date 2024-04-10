@@ -1,10 +1,12 @@
 
 #include <Arduino.h>
 #include "robot/robot.h"
-#include "serialCommand.h"
+#include "serialInterface.h"
 
 Robot robot;
-SerialCommands commands;
+// SerialCommands commands;
+SerialInterface serialInterface;
+
 
 uint8_t pins[4] {
 /* servo 0: */ 9,
@@ -13,15 +15,9 @@ uint8_t pins[4] {
 /* servo 3: */ 12
 };
 
-void onMessage(serial::Message& message)
+void onMessage(string msg)
 {
-    switch (message.header.type)
-    {
-    default:
-        serial::Message msg(0, 0);
-        commands.writeMessage(msg);
-        break;
-    }
+    
 }
 
 void setup() 
@@ -30,13 +26,14 @@ void setup()
 
     // Servo::setup();
 
-    commands.setCallback(onMessage);
+    // commands.setCallback(onMessage);
 
     // robot.attach(pins);
 }
 
 void loop()
 {
-    commands.update();
+    // commands.update();
+    serialInterface.update();
     // robot.update();
 }
