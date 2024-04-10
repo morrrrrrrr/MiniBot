@@ -26,6 +26,7 @@ void setup()
 
     // Servo::setup();
 
+    serialInterface.setCallback(onMessage);
     // commands.setCallback(onMessage);
 
     // robot.attach(pins);
