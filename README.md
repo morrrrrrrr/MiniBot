@@ -2,42 +2,56 @@
 
 MiniBot ist ein Arduino-gesteuerter Modellbauroboter
 
-# Backend-API
+# Serielle Schnittstelle
 
-## EndPoints
+Commands werden über "Messages" seriell an den Roboter Übertragen.
 
-**Allgemein**:
-* Modus Wechseln
-* Grundstellung fahren
+Serielle Messages haben als 1. Charakter den typ (z.B: 'T')
 
-* Abfragungen:
-    * Modus
-    * Zielposition
+Serielle Messages enden mit '\n'
 
-**Manuell**:
-* Input setzen
-* Geschwindigkeit setzen
-* Ziel anfahren
+## Commands
 
-**Automatik**:
-* Programm senden
-* Programm starten
-* Programm pausieren
+### Allgemein
 
-* Abfragungen:
-    * Aktueller Befehl mit Fortschritt
+* Modus Wechseln:
+    * Automatik
+    * Manuell
+    * Aus
 
-### Table
+### Automatik
 
-| Index | Name               | Endpoint             | GET                          | POST                         | Modus       |
-|-------|--------------------|----------------------|------------------------------|------------------------------|-------------|
-|     0 | Modus Wechseln     | /api/mode/set        | /                            | (0 - OFF, 1 - AUTO, 2 - MAN) | Allgemein   |
-|     1 | Modus Abfragen     | /api/mode/get        | (0 - OFF, 1 - AUTO, 2 - MAN) | /                            | Allgemein   |
-|     2 | Ziel Abfragen      | /api/target          | json: x, y, z, angle         | /                            | Allgemein   |
-|     3 | Input Setzen       | /api/input/target    | /                            | json: x, y, z, angle         | Manuell     |
-|     4 | Geschw. Setzen     | /api/input/speed     | /                            | number: speed in mm/s        | Manuell     |
-|     5 | Programm Senden    | /api/prog/send       | /                            | text: program structure      | Automatisch |
-|     6 | Programm Starten   | /api/prog/start      | /                            | /                            | Automatisch |
-|     7 | Programm Stoppen   | /api/prog/stop       | /                            | /                            | Automatisch |
-|     8 | Programm Pausieren | /api/prog/pause      | /                            | /                            | Automatisch |
-|     9 | Aktueller Befehl   | /api/prog/command    | json: command structure      | /                            | Automatisch |
+* Programm senden:
+    Programm kann nur gesendet werden, während der Ablauf gestoppt ist
+
+* Ablauf kontrollieren:
+    * Ablauf Starten: Start (S)
+    * Ablauf Pausieren: Pause (P)
+    * Ablauf Stoppen: Break(B)
+
+### Manuell
+
+* Befehl senden
+
+## Table
+
+| Index | CHAR | Benennung            | Data        |
+|-------|------|----------------------|-------------|
+| 00    | M    | Modus Wechseln       | char: A/M/O |
+| 10    | P    | Programm senden      | programm    |
+| 11    | C    | Ablauf kontrollieren | char: S/P/B |
+| 20    | B    | Befehl senden        | befehl      |
+
+# Daten
+
+## Befehl
+
+```
+MOVE_TYPE;SPEED;X;Y;Z;ANGLE;
+```
+
+## Programm
+
+```
+SIZE|BEFEHL|BEFEHL|...|
+```

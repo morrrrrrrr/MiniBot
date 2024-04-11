@@ -41,6 +41,12 @@ private:
      */
     void checkForNewCommand();
 
+public:
+    Program& getProgram()
+    {
+        return m_program;
+    }
+
 private:
     Program m_program;
 

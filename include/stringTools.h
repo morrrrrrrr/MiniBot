@@ -6,6 +6,8 @@ struct string
 {
     char* data;
     int length;
+
+    void move(int len);
 };
 
 namespace tools

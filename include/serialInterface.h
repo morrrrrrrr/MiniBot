@@ -6,7 +6,7 @@
 #include "robError.h"
 #include "stringTools.h"
 
-#define BUFFER_SIZE 512
+#define BUFFER_SIZE 512*8
 #define MSG_END_CHAR '\n'
 
 class SerialInterface

@@ -2,11 +2,10 @@
 #include <Arduino.h>
 #include "robot/robot.h"
 #include "serialInterface.h"
+#include "robotInterface.h"
 
-Robot robot;
-// SerialCommands commands;
+Robot           robot;
 SerialInterface serialInterface;
-
 
 uint8_t pins[4] {
 /* servo 0: */ 9,
@@ -14,11 +13,6 @@ uint8_t pins[4] {
 /* servo 2: */ 11,
 /* servo 3: */ 12
 };
-
-void onMessage(string msg)
-{
-    
-}
 
 void setup() 
 {

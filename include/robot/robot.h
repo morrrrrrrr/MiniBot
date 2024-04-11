@@ -28,6 +28,13 @@ public:
 public:
     void update();
 
+public:
+    void changeMode(RobotMode mode);
+
+public:
+    AutomaticRobot& getAutomatic();
+    ManualRobot& getManual();
+
 private:
     RobotMode m_mode;
     Time      m_time;
