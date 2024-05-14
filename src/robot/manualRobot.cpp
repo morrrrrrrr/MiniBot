@@ -6,12 +6,11 @@ ManualRobot::ManualRobot(RobotBase& base, CommandExecutor& commandExecutor) :
 
 void ManualRobot::update(int delta)
 {
-    if (!m_executor.isCommandActive())
-        m_executor.setCommand(m_input);
+    
 }
 
 
 void ManualRobot::setInput(RobCommand input)
 {
-    m_input = input;
+    m_executor.setCommand(input);
 }

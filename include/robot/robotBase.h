@@ -18,7 +18,7 @@
 class RobotBase
 {
 public:
-    RobotBase();
+    RobotBase(const Mat4& axisLengths);
 
 public:
     /*
@@ -55,6 +55,9 @@ public:
      * @return the time, that the movement will take
      */
     uint16_t speedToTime(RobPosition& currentPosition, RobPosition& nextPosition, uint16_t speed);
+
+public:
+    Servo* getServos();
 
 public:
     /*

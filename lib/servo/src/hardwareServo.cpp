@@ -6,7 +6,7 @@
 
 
 #define SERVO_FREQUENCY (1 / SERVO_PERIOD_TIME * 1000) 
-#define SERVO_DUTY_CYCLE_MAX (powf(2, SERVO_FREQUENCY) - 1)
+#define SERVO_DUTY_CYCLE_MAX (powf(2, SERVO_DUTY_RESOLUTION) - 1)
 
 
 template <typename Tx, typename Ty>
@@ -15,19 +15,23 @@ Ty myMap(Tx value, Tx fromLow, Tx fromHigh, Ty toLow, Ty toHigh)
     return ((value - fromLow) / fromHigh) * (toHigh - toLow) + toLow;
 }
 
-
-void Servo::isr_handler(void* servo_ptr)
+static IRAM_ATTR bool cb_ledc_fade_end_event(const ledc_cb_param_t *param, void *user_arg)
 {
     // Error-Handling: Check, if the argument is a nullptr
-    if (!servo_ptr) return;
+    if (!user_arg) return false;
 
     // Re-interpret-cast the void* to a Servo* to access the servo
-    Servo* servo = reinterpret_cast<Servo*>(servo_ptr);
+    Servo* servo = reinterpret_cast<Servo*>(user_arg);
 
+    servo->resetIsMoving();
+
+    return true;
+}
+
+void Servo::resetIsMoving()
+{
     // set the moving flag of the servo to false
-    servo->m_isMoving = false;
-
-    return;
+    m_isMoving = false;
 }
 
 
@@ -37,21 +41,24 @@ void Servo::setup()
         .speed_mode =      SERVO_SPEED_MODE,
         .duty_resolution = SERVO_DUTY_RESOLUTION,
         .timer_num  =      SERVO_TIMER,
-        .freq_hz =         SERVO_FREQUENCY,
+        .freq_hz =         50,
         .clk_cfg =         LEDC_AUTO_CLK
     };
 
     ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
 
-    ESP_ERROR_CHECK(ledc_fade_func_install(0));
+    ESP_ERROR_CHECK(ledc_fade_func_install(ESP_INTR_FLAG_SHARED));
+
+    // ESP_ERROR_CHECK(ledc_isr_register(servo_isr_handler, (void*)this, ESP_INTR_FLAG_SHARED, &m_intrHandle));
+    // ESP_ERROR_CHECK(ledc_isr_register(isr_handler, NULL, ESP_INTR_FLAG_SHARED, NULL));
 }
 
 Servo::Servo(int ledc_channel, float low, float high) : 
     m_ledcChannel(static_cast<ledc_channel_t>(ledc_channel)),
     m_thresholdLow(low),
     m_thresholdHigh(high),
-    m_dcLow ((m_thresholdLow   / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
-    m_dcHigh((m_thresholdHigh  / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
+    m_dcLow ((m_thresholdLow  / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
+    m_dcHigh((m_thresholdHigh / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
     m_isWriteAttached(false), m_isMoving(false),
     m_gpioPins(),
     m_currentDutyCycle(0),
@@ -87,7 +94,10 @@ void Servo::attachWrite(uint8_t pin)
 
     ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel));
 
-    ESP_ERROR_CHECK(ledc_isr_register(isr_handler, this, ESP_INTR_FLAG_LEVEL3, &m_intrHandle));
+    ledc_cbs_t callbacks = {
+        .fade_cb = cb_ledc_fade_end_event
+    };
+    ESP_ERROR_CHECK(ledc_cb_register(SERVO_SPEED_MODE, m_ledcChannel, &callbacks, (void*)this));
 }
 void Servo::attachRead(uint8_t pin)
 {
@@ -145,7 +155,7 @@ void Servo::write(float angle, uint16_t time, bool block)
     if (time)
     {
         // start a fade operation to the duty cycle using the time
-        startFadeOperation(time, block, block);
+        startFadeOperation(dc, time, block);
     }
     else
     {
@@ -174,6 +184,8 @@ void Servo::writeDutyCycle(int targetDuty)
 
     // ledcWrite(m_PWMChannel, targetDuty);
 
+    // Serial.println(targetDuty);
+
     ESP_ERROR_CHECK(ledc_set_duty(SERVO_SPEED_MODE, m_ledcChannel, targetDuty));
     ESP_ERROR_CHECK(ledc_update_duty(SERVO_SPEED_MODE, m_ledcChannel));
 }
@@ -181,6 +193,7 @@ void Servo::writeDutyCycle(int targetDuty)
 void Servo::startFadeOperation(int targetDuty, uint16_t time, bool block)
 {
     m_isMoving = true;
+    m_currentDutyCycle = targetDuty;
 
     ledc_set_fade_time_and_start(
         SERVO_SPEED_MODE,
@@ -189,6 +202,9 @@ void Servo::startFadeOperation(int targetDuty, uint16_t time, bool block)
         time,
         block ? LEDC_FADE_WAIT_DONE : LEDC_FADE_NO_WAIT
     );
+
+    if (block)
+        resetIsMoving();
 }
 
 void Servo::prepare()

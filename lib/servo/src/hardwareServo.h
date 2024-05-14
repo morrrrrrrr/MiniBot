@@ -7,7 +7,7 @@
 #include <driver/ledc.h>
 
 #define SERVO_TIMER                 LEDC_TIMER_0
-#define SERVO_DUTY_RESOLUTION       LEDC_TIMER_10_BIT
+#define SERVO_DUTY_RESOLUTION       LEDC_TIMER_8_BIT
 #define SERVO_PERIOD_TIME           20 // in ms
 #define SERVO_SPEED_MODE            LEDC_LOW_SPEED_MODE
 
@@ -107,11 +107,8 @@ private:
      */
     void startFadeOperation(int targetDuty, uint16_t speed, bool blocking);
 
-private:
-    /*
-     * This gets called in the ISR when a fade operation ends
-     */
-    static void isr_handler(void* servo_ptr);
+public:
+    void resetIsMoving();
 
 private:
     ledc_channel_t m_ledcChannel;
@@ -136,5 +133,10 @@ private:
     ledc_isr_handle_t m_intrHandle;
 
 };
+
+/*
+ * This gets called in the ISR when a fade operation ends
+ */
+static void servo_isr_handler(void* servo_ptr);
 
 #endif

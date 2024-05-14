@@ -25,7 +25,6 @@ public:
     void setInput(RobCommand input);
 
 private:
-    RobCommand m_input;
 
 private:
     RobotBase& m_base;

@@ -1,8 +1,8 @@
 #include "robot/robot.h"
 
-Robot::Robot() :
+Robot::Robot(const Mat4& axisLengths) :
     m_mode(RobotMode::OFF),
-    m_base(),
+    m_base(axisLengths),
     m_executor(m_base),
     m_automatic(m_base, m_executor),
     m_manual(m_base, m_executor)
@@ -45,6 +45,8 @@ void Robot::update()
     default:
         break;
     }
+
+    m_executor.update(m_time.getDelta());
 }
 
 void Robot::changeMode(RobotMode mode)

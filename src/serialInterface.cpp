@@ -1,7 +1,9 @@
 #include "serialInterface.h"
 
 SerialInterface::SerialInterface()
-{ }
+{ 
+    m_currentPos = m_buffer;
+}
 
 void SerialInterface::update()
 {
@@ -40,7 +42,12 @@ void SerialInterface::appendChar(char c)
 
 void SerialInterface::messageEnd()
 {
-    
+    string msg;
+
+    msg.data = m_buffer;
+    msg.length = m_currentPos - m_buffer;
+
+    (*m_messageReceivedCallback)(msg);
     resetBuffer();
 }
 

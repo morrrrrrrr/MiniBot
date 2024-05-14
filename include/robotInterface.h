@@ -27,9 +27,10 @@ namespace parse
             switch (moveType)
             {
             case 'L':
+                cmd.moveType = MoveType::Linear;
                 break;
             case 'J':
-
+                cmd.moveType = MoveType::Optimal;
                 break;
 
             default:
@@ -46,7 +47,7 @@ namespace parse
             split.data = str.data;
             split.length = tools::strFind(str, delim);
 
-            str.move(split.length);
+            str.move(split.length + 1);
 
             num = atol(split.data);
 
@@ -58,7 +59,7 @@ namespace parse
             split.data = str.data;
             split.length = tools::strFind(str, delim);
 
-            str.move(split.length);
+            str.move(split.length + 1);
 
             num = atof(split.data);
 
@@ -69,12 +70,12 @@ namespace parse
 
     bool parseCommand(string str, RobCommand& cmd)
     {
-        if (!command::parseMoveType(str, cmd)) return false;
-        if (!command::parseInt(str, cmd.speed)) return false;
+        if (!command::parseMoveType(str, cmd))             return false;
+        if (!command::parseInt(str, cmd.speed))            return false;
         if (!command::parseFloat(str, cmd.target.point.x)) return false;
         if (!command::parseFloat(str, cmd.target.point.y)) return false;
         if (!command::parseFloat(str, cmd.target.point.z)) return false;
-        if (!command::parseFloat(str, cmd.target.angle)) return false;
+        if (!command::parseFloat(str, cmd.target.angle))   return false;
 
         return true;
     }
@@ -93,47 +94,12 @@ namespace parse
             parseCommand(str, cmd);
             str.move(tools::strFind(str, '|'));
         }
+
+        return true;
     }
 
 } // namespace parse
 
-/*
- * Connects the incoming serial messages to the robot's functions
- */
-void onMessage(string msg)
-{
-    if (msg.length < 1)
-    {
-        // error
-        return;
-    }
-
-    // extract the msg type (1st character)
-    char type = *msg.data;
-    msg.move(1);
-
-    switch (type)
-    {
-    case 'M':
-        interface::changeRobotMode(msg);
-        break;
-
-    case 'P':
-        interface::receiveProgram(msg);
-        break;
-
-    case 'C':
-        interface::controlProgramFlow(msg);
-        break;
-
-    case 'B':
-        interface::receiveCommand(msg);
-        break;
-
-    default:
-        break;
-    }
-}
 
 namespace interface
 {
@@ -211,11 +177,52 @@ namespace interface
 
         RobCommand cmd;
 
-        parse::parseCommand(msg, cmd);
+        if (!parse::parseCommand(msg, cmd))
+        {
+            return;
+        }
 
         robot.getManual().setInput(cmd);
     }
 
 } // namespace interface
+
+/*
+ * Connects the incoming serial messages to the robot's functions
+ */
+void onMessage(string msg)
+{
+    if (msg.length < 1)
+    {
+        // error
+        return;
+    }
+
+    // extract the msg type (1st character)
+    char type = *msg.data;
+    msg.move(1);
+
+    switch (type)
+    {
+    case 'M':
+        interface::changeRobotMode(msg);
+        break;
+
+    case 'P':
+        interface::receiveProgram(msg);
+        break;
+
+    case 'C':
+        interface::controlProgramFlow(msg);
+        break;
+
+    case 'B':
+        interface::receiveCommand(msg);
+        break;
+
+    default:
+        break;
+    }
+}
 
 #endif

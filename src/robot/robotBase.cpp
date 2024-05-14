@@ -1,12 +1,13 @@
 #include "robot/robotBase.h"
 
-RobotBase::RobotBase() :
+RobotBase::RobotBase(const Mat4& axisLengths) :
     m_servos({
         Servo(0),
         Servo(1),
         Servo(2),
         Servo(3)
-    })
+    }),
+    m_inverseKinematic(axisLengths)
 {
 
 }
@@ -45,24 +46,26 @@ void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, floa
 
     for (int i = 0; i < 4; i++)
     {
-        if (finalAngles[i] < angleLimit)
-        {
-            handle_robot_error(rob_error_t::TOO_CLOSE_ANGLES);
-            return;
-        }
+        // if (finalAngles[i] < angleLimit)
+        // {
+        //     handle_robot_error(rob_error_t::TOO_CLOSE_ANGLES);
+        //     return;
+        // }
 
         servos[i].write(finalAngles[i], time);
 
         // Debug Message for servo angles
-        Serial.print("Servo ");
-        Serial.print(i);
-        Serial.print(" moved to angle ");
+        // Serial.print("Servo ");
+        // Serial.print(i);
+        // Serial.print(" moved to angle ");
         Serial.println(finalAngles[i]);
     }
 }
 
 void RobotBase::setPosition(RobPosition pos, uint16_t speed)
 {
+    m_position = pos;
+    
     Mat4 res = m_inverseKinematic.calculate(pos);
 
     uint16_t time = 0;
@@ -96,6 +99,11 @@ uint16_t RobotBase::speedToTime(RobPosition& current, RobPosition& next, uint16_
 RobPosition RobotBase::getCurrentPosition() const
 {
     return m_position;
+}
+
+Servo* RobotBase::getServos()
+{
+    return m_servos;
 }
 
 void RobotBase::setAxisLengths(float ax0, float ax1, float ax2)

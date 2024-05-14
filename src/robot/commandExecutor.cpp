@@ -1,7 +1,7 @@
 #include "robot/commandExecutor.h"
 
 CommandExecutor::CommandExecutor(RobotBase& robotBase) : 
-    m_base(robotBase)
+    m_base(robotBase), m_commandProgress(0)
 { /* do nothing */ }
 
 void CommandExecutor::update(int delta)
@@ -44,12 +44,23 @@ void CommandExecutor::updateCurrentCommand(int delta)
 bool CommandExecutor::handleLinearMove(RobCommand& command, int delta)
 {
     float distance = (m_linearStart.point - command.target.point).magnitude();
-    uint16_t time = distance / command.speed * 1000;
+    int time = static_cast<float>(command.speed) / distance * 1000;
 
-    m_commandProgress += delta;
+    if (distance > 0)
+    {
+        m_commandProgress += delta;
 
-    // "instantly" move in micro steps along a linear path from start to end
-    m_base.setPosition(lerpRobPosition(m_linearStart, command.target, static_cast<float>(m_commandProgress) / time), 0);
+        float t = static_cast<float>(m_commandProgress) / time;
+
+        if (m_commandProgress >= time) t = 1.0f;
+
+        Serial.println(t);
+
+        RobPosition lerpedPos = lerpRobPosition(m_linearStart, command.target, t);
+
+        // "instantly" move in micro steps along a linear path from start to end
+        m_base.setPosition(lerpedPos, 0);
+    }
 
     return m_commandProgress >= time;
 }
@@ -63,7 +74,7 @@ void CommandExecutor::startCommand(const RobCommand& command)
     m_currentCommand = command;
     m_commandActive = true;
     m_commandProgress = 0;
-
+    
     switch (command.moveType)
     {
     case MoveType::Linear:

@@ -19,7 +19,7 @@ enum RobotMode : uint8_t
 class Robot
 {
 public:
-    Robot();
+    Robot(const Mat4& axisLengths);
 
 public:
     void attach(const uint8_t pins[]);

@@ -52,11 +52,11 @@ private:
 
 private:
     RobCommand m_currentCommand;
-    uint16_t m_commandProgress;
+    int m_commandProgress;
 
     // flag weather or not a current command is set
     bool m_commandActive;
-
+    
     bool m_running = false;
 
     RobPosition m_linearStart;

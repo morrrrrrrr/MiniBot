@@ -8,6 +8,19 @@
 
 struct Mat4
 {
+public:
+    Mat4() :
+        a(0), b(0), c(0), d(0)
+    {
+
+    }
+    Mat4(float a, float b, float c, float d) :
+        a(a), b(b), c(c), d(d)
+    {
+
+    }
+
+public:
     float a, b, c, d;
 };
 struct RobPosition
@@ -68,7 +81,7 @@ private:
         /*
          * Make a 3-dimensional reverse kinematic through the point and request thingy
          */
-
+        
         float x = point2d.x;
         float y = point2d.y;
 
