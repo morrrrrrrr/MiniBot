@@ -127,6 +127,7 @@ void onMessage(string msg)
         break;
 
     case 'B':
+        interface::receiveCommand(msg);
         break;
 
     default:
@@ -198,6 +199,21 @@ namespace interface
         default:
             break;
         }
+    }
+
+    void receiveCommand(string msg)
+    {
+        if (msg.length < 1)
+        {
+            // error
+            return;
+        }
+
+        RobCommand cmd;
+
+        parse::parseCommand(msg, cmd);
+
+        robot.getManual().setInput(cmd);
     }
 
 } // namespace interface
