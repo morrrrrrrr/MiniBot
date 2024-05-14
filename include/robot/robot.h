@@ -24,6 +24,8 @@ public:
 public:
     void attach(const uint8_t pins[]);
     void attachRead(const uint8_t pins[]);
+
+    inline void setServoOffsets(float s0, float s1, float s2, float s3);
     
 public:
     void update();
@@ -34,6 +36,7 @@ public:
 public:
     AutomaticRobot& getAutomatic();
     ManualRobot& getManual();
+    RobotBase& getBase();
 
 private:
     RobotMode m_mode;

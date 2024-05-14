@@ -74,7 +74,7 @@ private:
     InverseKinematic m_inverseKinematic;
     RobPosition      m_position;
 
-private:
+public:
     Mat4 m_servoOffsets;
 
     // what is the minimum error

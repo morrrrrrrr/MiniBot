@@ -17,6 +17,14 @@ void Robot::attachRead(const uint8_t pins[])
     m_base.attachRead(pins);
 }
 
+void Robot::setServoOffsets(float s0, float s1, float s2, float s3)
+{
+    getBase().m_servoOffsets.a = s0;
+    getBase().m_servoOffsets.b = s1;
+    getBase().m_servoOffsets.c = s2;
+    getBase().m_servoOffsets.d = s3;
+}
+
 void Robot::update()
 {
     // check for any errors, only if there are none, continue
@@ -51,4 +59,8 @@ AutomaticRobot& Robot::getAutomatic()
 ManualRobot& Robot::getManual()
 {
     return m_manual;
+}
+RobotBase& Robot::getBase()
+{
+    return m_base;
 }
