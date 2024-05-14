@@ -18,17 +18,15 @@ void setup()
 {
     Serial.begin(9600);
 
-    // Servo::setup();
+    Servo::setup();
 
     serialInterface.setCallback(onMessage);
-    // commands.setCallback(onMessage);
 
-    // robot.attach(pins);
+    robot.attach(pins);
 }
 
 void loop()
 {
-    // commands.update();
     serialInterface.update();
-    // robot.update();
+    robot.update();
 }
