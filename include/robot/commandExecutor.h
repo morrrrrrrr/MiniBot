@@ -61,6 +61,9 @@ private:
 
     RobPosition m_linearStart;
 
+    unsigned long m_optimalStart;
+    uint16_t m_optimalTime;
+
 private:
     RobotBase& m_base;
 

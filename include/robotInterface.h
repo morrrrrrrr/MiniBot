@@ -86,12 +86,11 @@ namespace parse
 
         if (!command::parseInt(str, size, '|')) return false;
 
-        prog.resize(size);
+        prog.resize(size, true);
 
         for (uint16_t i = 0; i < size; i++)
         {
-            RobCommand cmd;
-            parseCommand(str, cmd);
+            parseCommand(str, prog.data()[i]);
             str.move(tools::strFind(str, '|'));
         }
 

@@ -66,10 +66,8 @@ void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, floa
     }
 }
 
-void RobotBase::setPosition(RobPosition pos, uint16_t speed)
-{
-    m_position = pos;
-    
+uint16_t RobotBase::setPosition(RobPosition pos, uint16_t speed)
+{ 
     Mat4 res = m_inverseKinematic.calculate(pos);
 
     uint16_t time = 0;
@@ -78,7 +76,11 @@ void RobotBase::setPosition(RobPosition pos, uint16_t speed)
         time = speedToTime(m_position, pos, speed);
     }
 
+    m_position = pos;
+
     writeResult(m_servos, res, m_servoOffsets, time, m_angleLimit);
+
+    return time;
 }
 
 bool RobotBase::isMoving() const

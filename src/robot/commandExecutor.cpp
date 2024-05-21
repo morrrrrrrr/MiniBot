@@ -68,7 +68,7 @@ bool CommandExecutor::handleLinearMove(RobCommand& command, int delta)
 }
 bool CommandExecutor::handleOptimalMove(RobCommand& command, int delta)
 {
-    return !m_base.isMoving();
+    return millis() - m_optimalStart >= m_optimalTime && !m_base.isMoving();
 }
 
 void CommandExecutor::startCommand(const RobCommand& command)
@@ -84,7 +84,11 @@ void CommandExecutor::startCommand(const RobCommand& command)
         break;
 
     case MoveType::Optimal:
-        m_base.setPosition(command.target, command.speed);
+        m_optimalTime = m_base.setPosition(command.target, command.speed);
+        m_optimalStart = millis();
+
+        Serial.println("Starting Optimal Move:");
+        Serial.print("Time: "); Serial.println(m_optimalTime);
         break;
 
     default:

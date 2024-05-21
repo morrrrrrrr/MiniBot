@@ -37,8 +37,9 @@ public:
      * Let the robot drive to a position
      * @param pos   the position the robot should drive to
      * @param speed with which speed the robot should drive to the position (mm/s) (0 is instant)
+     * @return the time it takes to reach that position
      */
-    void setPosition(RobPosition pos, uint16_t speed);
+    uint16_t setPosition(RobPosition pos, uint16_t speed);
 
     /*
      * Returns if one or more of the servos are currently moving

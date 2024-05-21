@@ -66,3 +66,7 @@ RobotBase& Robot::getBase()
 {
     return m_base;
 }
+CommandExecutor& Robot::getExecutor()
+{
+    return m_executor;
+}

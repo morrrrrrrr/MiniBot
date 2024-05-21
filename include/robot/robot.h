@@ -37,6 +37,7 @@ public:
     AutomaticRobot& getAutomatic();
     ManualRobot& getManual();
     RobotBase& getBase();
+    CommandExecutor& getExecutor();
 
 private:
     RobotMode m_mode;
