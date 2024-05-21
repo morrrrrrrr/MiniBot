@@ -53,12 +53,14 @@ public:
         // transform the 4-dimensional problem to 3 dimensions
         float angle = atan2f(req.point.z, req.point.x);
 
+        float reqAngle = (req.angle - (static_cast<int>(req.angle / 360) * 360)) * M_PI / 180.0f;
+
         Vector3f point2d(
             /* x: */ sqrtf( SQUARE(req.point.x) + SQUARE(req.point.z) ),
             /* y: */ req.point.y 
         );
 
-        Vector3f target2d = point2d + Vector3f(cosf(req.angle), sinf(req.angle)) * m_axis_lengths.c;
+        Vector3f target2d = point2d + Vector3f(cosf(reqAngle), sinf(reqAngle)) * m_axis_lengths.c;
 
         Mat4 res;
         handle_robot_error(calculate3DIM(target2d, angle, res));
@@ -66,7 +68,7 @@ public:
         // why? i dont know
         res.b = -res.b;
 
-        res.d = req.angle -res.b -res.c;
+        res.d = reqAngle -res.b -res.c;
 
         return res;
     }

@@ -4,7 +4,7 @@
 #include "serialInterface.h"
 #include "robotInterface.h"
 
-Robot           robot(Mat4(50, 50, 50, 50));
+Robot robot(Mat4(50, 50, 50, 50));
 SerialInterface serialInterface;
 
 uint8_t pins[4] {
@@ -18,8 +18,6 @@ void setup()
 {
     Serial.begin(9600);
 
-    Serial.println("Hello, World!");
-
     Servo::setup();
 
     serialInterface.setCallback(onMessage);
@@ -31,4 +29,5 @@ void loop()
 {
     serialInterface.update();
     robot.update();
+    delay(100);
 }

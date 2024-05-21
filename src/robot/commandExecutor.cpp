@@ -44,23 +44,25 @@ void CommandExecutor::updateCurrentCommand(int delta)
 bool CommandExecutor::handleLinearMove(RobCommand& command, int delta)
 {
     float distance = (m_linearStart.point - command.target.point).magnitude();
-    int time = static_cast<float>(command.speed) / distance * 1000;
+    int time = distance / static_cast<float>(command.speed) * 1000;
 
-    if (distance > 0)
+    if (distance <= 0)
     {
-        m_commandProgress += delta;
-
-        float t = static_cast<float>(m_commandProgress) / time;
-
-        if (m_commandProgress >= time) t = 1.0f;
-
-        Serial.println(t);
-
-        RobPosition lerpedPos = lerpRobPosition(m_linearStart, command.target, t);
-
-        // "instantly" move in micro steps along a linear path from start to end
-        m_base.setPosition(lerpedPos, 0);
+        return true;
     }
+
+    m_commandProgress += delta;
+
+    float t = static_cast<float>(m_commandProgress) / time;
+
+    if (m_commandProgress >= time) t = 1.0f;
+
+    // Serial.print("t: "); Serial.println(t);
+
+    RobPosition lerpedPos = lerpRobPosition(m_linearStart, command.target, t);
+
+    // "instantly" move in micro steps along a linear path from start to end
+    m_base.setPosition(lerpedPos, 0);
 
     return m_commandProgress >= time;
 }
