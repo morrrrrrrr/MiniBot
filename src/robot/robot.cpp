@@ -48,10 +48,6 @@ void Robot::update()
         m_manual.update(m_time.getDelta());
         break;
 
-    case RobotMode::CALIBRATION:
-        Serial.println("Calibration mode not yet implemented");
-        break;
-
     default:
         break;
     }
@@ -71,10 +67,6 @@ AutomaticRobot& Robot::getAutomatic()
 ManualRobot& Robot::getManual()
 {
     return m_manual;
-}
-CalibrationRobot& Robot::getCalibration()
-{
-    return m_calibration;
 }
 RobotBase& Robot::getBase()
 {

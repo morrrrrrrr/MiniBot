@@ -7,14 +7,13 @@
 
 #include "robot/automaticRobot.h"
 #include "robot/manualRobot.h"
-#include "robot/calibrationRobot.h"
 
 #include "common.h"
 #include "deltaTime.h"
 
 enum RobotMode : uint8_t
 {
-    OFF, AUTOMATIC, MANUAL, CALIBRATION
+    OFF, AUTOMATIC, MANUAL
 };
 
 class Robot
@@ -37,7 +36,6 @@ public:
 public:
     AutomaticRobot& getAutomatic();
     ManualRobot& getManual();
-    CalibrationRobot& getCalibration();
     RobotBase& getBase();
     CommandExecutor& getExecutor();
 
@@ -52,7 +50,6 @@ private:
 private:
     AutomaticRobot   m_automatic;
     ManualRobot      m_manual;
-    CalibrationRobot m_calibration;
 
 };
 

@@ -17,7 +17,6 @@ Serielle Messages enden mit '\n'
 * Modus Wechseln:
     * Automatik
     * Manuell
-    * Kalibrierung
     * Aus
 
 ### Automatik
@@ -38,7 +37,7 @@ Serielle Messages enden mit '\n'
 
 | Index | CHAR | Benennung            | Data          |
 |-------|------|----------------------|---------------|
-| 00    | M    | Modus Wechseln       | char: A/M/O/C |
+| 00    | M    | Modus Wechseln       | char: A/M/O   |
 | 10    | P    | Programm senden      | programm      |
 | 11    | C    | Ablauf kontrollieren | char: S/P/B   |
 | 20    | B    | Befehl senden        | befehl        |
