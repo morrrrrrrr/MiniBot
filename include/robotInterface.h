@@ -124,9 +124,6 @@ namespace interface
         case 'O':
             robot.changeMode(RobotMode::OFF);
             break;
-        case 'C':
-            robot.changeMode(RobotMode::CALIBRATION);
-            break;
 
         default:
             break;
@@ -187,6 +184,27 @@ namespace interface
         robot.getManual().setInput(cmd);
     }
 
+    void changeServoOffset(string msg)
+    {
+        if (msg.length < 3)
+        {
+            // error
+            return;
+        }
+
+        int index;
+        float value;
+
+        // read index:
+        index = msg.data[0] - '0';
+
+        msg.move(2);
+
+        value = atof(msg.data);
+
+        robot.setServoOffset(index, value);
+    }
+
 } // namespace interface
 
 /*
@@ -220,6 +238,10 @@ void onMessage(string msg)
 
     case 'B':
         interface::receiveCommand(msg);
+        break;
+
+    case 'S':
+        interface::changeServoOffset(msg);
         break;
 
     default:

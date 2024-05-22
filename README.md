@@ -19,6 +19,11 @@ Serielle Messages enden mit '\n'
     * Manuell
     * Aus
 
+* Servo Offset ändern:
+    Index;Offset
+
+    Offset ist in Radianten
+
 ### Automatik
 
 * Programm senden:
@@ -38,6 +43,7 @@ Serielle Messages enden mit '\n'
 | Index | CHAR | Benennung            | Data          |
 |-------|------|----------------------|---------------|
 | 00    | M    | Modus Wechseln       | char: A/M/O   |
+| 01    | S    | Servo Offset ändern  | index;offset  |
 | 10    | P    | Programm senden      | programm      |
 | 11    | C    | Ablauf kontrollieren | char: S/P/B   |
 | 20    | B    | Befehl senden        | befehl        |

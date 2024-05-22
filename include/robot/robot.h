@@ -26,6 +26,7 @@ public:
     void attachRead(const uint8_t pins[]);
 
     inline void setServoOffsets(float s0, float s1, float s2, float s3);
+    inline void setServoOffset(int index, float offset);
     
 public:
     void update();

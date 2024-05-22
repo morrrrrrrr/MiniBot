@@ -21,6 +21,22 @@ public:
     }
 
 public:
+    void set(int index, float value)
+    {
+        switch (index)
+        {
+        case 0: a = value;
+            break;
+        case 1: b = value;
+            break;
+        case 2: c = value;
+            break;
+        case 3: d = value;
+            break;
+        }
+    }
+
+public:
     float a, b, c, d;
 };
 struct RobPosition
