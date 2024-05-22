@@ -60,9 +60,9 @@ void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, floa
         // Serial.print(" moved to angle ");
         // Serial.println(finalAngles[i]);
         
-        Serial.print(i);
-        Serial.print(";");
-        Serial.println(finalAngles[i]);
+        // Serial.print(i);
+        // Serial.print(";");
+        // Serial.println(finalAngles[i]);
     }
 }
 

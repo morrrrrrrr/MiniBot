@@ -124,6 +124,9 @@ namespace interface
         case 'O':
             robot.changeMode(RobotMode::OFF);
             break;
+        case 'C':
+            robot.changeMode(RobotMode::CALIBRATION);
+            break;
 
         default:
             break;

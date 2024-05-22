@@ -21,30 +21,14 @@ void setup()
     Servo::setup();
 
     serialInterface.setCallback(onMessage);
-
+    
     robot.attach(pins);
 }
-
-bool commandRunningPrev = false;
 
 void loop()
 {
     serialInterface.update();
     robot.update();
-
-    bool commandRunning = robot.getExecutor().isCommandActive();
-    if (commandRunning && !commandRunningPrev)
-    {
-        // command started
-        Serial.println("Command Started!");
-    }
-    if (!commandRunning && commandRunningPrev)
-    {
-        // command stopped
-        Serial.println("Command Stopped!");
-    }
-
-    commandRunningPrev = commandRunning;
 
     delay(100);
 }

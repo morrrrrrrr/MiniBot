@@ -28,7 +28,13 @@ void Robot::setServoOffsets(float s0, float s1, float s2, float s3)
 void Robot::update()
 {
     // check for any errors, only if there are none, continue
-    if (check_robot_error()) return;
+    if (check_robot_error())
+    {
+        Serial.println("There was a robot error!");
+        Serial.print("Error Code: "); Serial.println(robError);
+        
+        m_mode = RobotMode::OFF;
+    }
 
     m_time.update();
 
@@ -40,6 +46,10 @@ void Robot::update()
 
     case RobotMode::MANUAL:
         m_manual.update(m_time.getDelta());
+        break;
+
+    case RobotMode::CALIBRATION:
+        Serial.println("Calibration mode not yet implemented");
         break;
 
     default:
@@ -61,6 +71,10 @@ AutomaticRobot& Robot::getAutomatic()
 ManualRobot& Robot::getManual()
 {
     return m_manual;
+}
+CalibrationRobot& Robot::getCalibration()
+{
+    return m_calibration;
 }
 RobotBase& Robot::getBase()
 {
