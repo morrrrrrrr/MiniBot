@@ -34,6 +34,10 @@ public:
         m_running = false;
         m_program.reset();
     }
+    void step()
+    {
+        checkForNewCommand();
+    }
 
 private:
     /*

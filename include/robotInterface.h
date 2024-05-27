@@ -160,6 +160,9 @@ namespace interface
         case 'B':
             automatic.stop();
             break;
+        case 'F':
+            automatic.step();
+            break;
 
         default:
             break;

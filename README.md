@@ -33,6 +33,7 @@ Serielle Messages enden mit '\n'
     * Ablauf Starten: Start (S)
     * Ablauf Pausieren: Pause (P)
     * Ablauf Stoppen: Break(B)
+    * Step: (F)
 
 ### Manuell
 
@@ -45,7 +46,7 @@ Serielle Messages enden mit '\n'
 | 00    | M    | Modus Wechseln       | char: A/M/O   |
 | 01    | S    | Servo Offset ändern  | index;offset  |
 | 10    | P    | Programm senden      | programm      |
-| 11    | C    | Ablauf kontrollieren | char: S/P/B   |
+| 11    | C    | Ablauf kontrollieren | char: S/P/B/F |
 | 20    | B    | Befehl senden        | befehl        |
 
 # Daten
@@ -61,3 +62,13 @@ MOVE_TYPE;SPEED;X;Y;Z;ANGLE;
 ```
 SIZE|BEFEHL|BEFEHL|...|
 ```
+
+# Beispiel Ablauf
+
+Modus auf Manuell setzen:
+
+    MM
+
+Auf einen Punkt fahren:
+
+    BL;1000;0;50;50;45;
