@@ -20,7 +20,7 @@ public:
     * @param low          T on of the PWM when the servo is left most (ms)
     * @param high         T on of the PWM when the servo is right most (ms)
     */
-    Servo(int ledc_channel, float low = 1.5f, float high = 2.5f);
+    Servo(int ledc_channel, float maxAngle = M_PI, float low = 1.5f, float high = 2.5f);
 
 public:
     /*
@@ -123,6 +123,8 @@ private:
     float m_thresholdHigh = 2.5f;
 
     int m_dcLow, m_dcHigh;
+
+    float m_maxAngle;
 
     bool m_isMoving =        false;
     bool m_isWriteAttached = false;

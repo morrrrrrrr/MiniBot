@@ -1,11 +1,13 @@
 #include "robot/robotBase.h"
 
+#define ROBOT_RANGE M_PI
+
 RobotBase::RobotBase(const Mat4& axisLengths) :
     m_servos({
-        Servo(0),
-        Servo(1),
-        Servo(2),
-        Servo(3)
+        Servo(0, ROBOT_RANGE, 0.25, 2.5),
+        Servo(1, ROBOT_RANGE, 0.25, 2.5),
+        Servo(2, ROBOT_RANGE, 0.25, 2.5),
+        Servo(3, ROBOT_RANGE, 0.25, 2.5)
     }),
     m_inverseKinematic(axisLengths)
 {
@@ -33,7 +35,7 @@ void RobotBase::attachRead(const uint8_t pins[])
     }
 }
 
-void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, float angleLimit)
+void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time)
 {
     if (robError) return;
 
@@ -46,9 +48,9 @@ void writeResult(Servo* servos, Mat4& angles, Mat4& offsets, uint16_t time, floa
 
     for (int i = 0; i < 4; i++)
     {
-        // if (finalAngles[i] < angleLimit)
+        // if (finalAngles[i] < 0 || finalAngles[i] > M_PI)
         // {
-        //     handle_robot_error(rob_error_t::TOO_CLOSE_ANGLES);
+        //     handle_robot_error(rob_error_t::OUT_OF_BOUNDS);
         //     return;
         // }
 
@@ -78,7 +80,7 @@ uint16_t RobotBase::setPosition(RobPosition pos, uint16_t speed)
 
     m_position = pos;
 
-    writeResult(m_servos, res, m_servoOffsets, time, m_angleLimit);
+    writeResult(m_servos, res, m_servoOffsets, time);
 
     return time;
 }
@@ -115,4 +117,11 @@ Servo* RobotBase::getServos()
 void RobotBase::setAxisLengths(float ax0, float ax1, float ax2)
 {
     m_inverseKinematic.setAxisLengths({ax0, ax1, ax2, 0});
+}
+
+void RobotBase::calibrate()
+{
+    Mat4 angles(0, 0, 0, 0);
+
+    writeResult(m_servos, angles, m_servoOffsets, 0);
 }

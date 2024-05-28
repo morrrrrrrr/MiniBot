@@ -53,12 +53,13 @@ void Servo::setup()
     // ESP_ERROR_CHECK(ledc_isr_register(isr_handler, NULL, ESP_INTR_FLAG_SHARED, NULL));
 }
 
-Servo::Servo(int ledc_channel, float low, float high) : 
+Servo::Servo(int ledc_channel, float maxAngle, float low, float high) : 
     m_ledcChannel(static_cast<ledc_channel_t>(ledc_channel)),
     m_thresholdLow(low),
     m_thresholdHigh(high),
     m_dcLow ((m_thresholdLow  / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
     m_dcHigh((m_thresholdHigh / SERVO_PERIOD_TIME) * SERVO_DUTY_CYCLE_MAX),
+    m_maxAngle(maxAngle),
     m_isWriteAttached(false), m_isMoving(false),
     m_gpioPins(),
     m_currentDutyCycle(0),
@@ -150,7 +151,7 @@ void Servo::write(float angle, uint16_t time, bool block)
     }
 
     // map the angle to the dutycycle
-    int dc = myMap<float, int>(angle, 0.0f, M_PI, m_dcLow, m_dcHigh);
+    int dc = myMap<float, int>(angle, 0.0f, m_maxAngle, m_dcLow, m_dcHigh);
 
     if (time)
     {

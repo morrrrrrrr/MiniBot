@@ -86,9 +86,6 @@ void CommandExecutor::startCommand(const RobCommand& command)
     case MoveType::Optimal:
         m_optimalTime = m_base.setPosition(command.target, command.speed);
         m_optimalStart = millis();
-
-        Serial.println("Starting Optimal Move:");
-        Serial.print("Time: "); Serial.println(m_optimalTime);
         break;
 
     default:

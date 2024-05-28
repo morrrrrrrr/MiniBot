@@ -45,6 +45,7 @@ Serielle Messages enden mit '\n'
 |-------|------|----------------------|---------------|
 | 00    | M    | Modus Wechseln       | char: A/M/O   |
 | 01    | S    | Servo Offset ändern  | index;offset  |
+| 02    | K    | Roboter kalibrieren  |               |
 | 10    | P    | Programm senden      | programm      |
 | 11    | C    | Ablauf kontrollieren | char: S/P/B/F |
 | 20    | B    | Befehl senden        | befehl        |
@@ -72,3 +73,17 @@ Modus auf Manuell setzen:
 Auf einen Punkt fahren:
 
     BL;1000;0;50;50;45;
+
+# Kalibrieren
+
+Keinen Modus einstellen / roboter ausschalten
+
+    MO
+
+Kalibrieren
+
+    K
+
+Offsets einstellen (servos 0-3) (offsets in radianten)
+
+    S0;0

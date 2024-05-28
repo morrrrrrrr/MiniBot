@@ -247,6 +247,10 @@ void onMessage(string msg)
         interface::changeServoOffset(msg);
         break;
 
+    case 'K':
+        robot.getBase().calibrate();
+        break;
+
     default:
         break;
     }

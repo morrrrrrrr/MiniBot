@@ -25,10 +25,29 @@ void setup()
     robot.attach(pins);
 }
 
+bool lastCommandActive = false;
+
 void loop()
 {
     serialInterface.update();
     robot.update();
+
+    if (!robot.getExecutor().isCommandActive() && lastCommandActive)
+    {
+        // current command stopped -> sending a message
+        Serial.println("C");
+    }
+
+    lastCommandActive = robot.getExecutor().isCommandActive();
+
+    if (check_robot_error())
+    {
+        Serial.print("ERROR: code "); Serial.println(robError);
+
+        Serial.read();
+
+        robError = rob_error_t::NO_ERROR;
+    }
 
     delay(100);
 }

@@ -47,6 +47,9 @@ public:
     bool isMoving() const;
 
 public:
+    void calibrate();
+
+public:
     /*
      * Translates the absolute movement that needs to be done and calculates the time, in which this is done
      * @param currentPosition reference to the current position of the robot (pass in m_position)
